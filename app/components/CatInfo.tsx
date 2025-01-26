@@ -6,20 +6,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import CatSelector from "./CatSelector";
 
-export default function CatInfo() {
+export default async function CatInfo() {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
-        <CardTitle>Cat Name</CardTitle>
-        <CardDescription>Mitaine</CardDescription>
+        <CardTitle>Votre chat</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>Card Content</p>
+        <CatSelector />
       </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
     </Card>
   );
 }
