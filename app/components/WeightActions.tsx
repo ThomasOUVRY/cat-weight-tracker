@@ -1,9 +1,19 @@
 "use server";
 
-import { fetchCatList } from "@/lib/data";
+import { fetchCat } from "@/lib/data";
+import { notFound } from "next/navigation";
 
-export default async function WeightActions() {
-  const catList = await fetchCatList();
+export default async function WeightActions({ catId }: { catId: string }) {
+  const cat = await fetchCat(catId);
 
-  return <pre>{JSON.stringify(catList, null, 2)}</pre>;
+  if (!cat) {
+    return notFound();
+  }
+
+  return (
+    <div>
+      Le chat est {cat.name} et est né le{" "}
+      {new Date(cat.birth_date).toLocaleDateString()}
+    </div>
+  );
 }

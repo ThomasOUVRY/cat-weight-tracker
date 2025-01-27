@@ -18,11 +18,11 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = Array.from({ length: 75 }, (_, index) => ({
+/* const chartData = Array.from({ length: 75 }, (_, index) => ({
   semaine: `${index + 1}`,
   desktop: index + 1,
   mobile: index + 1,
-}));
+})); */
 
 const mitaineData = [
   {

@@ -2,7 +2,7 @@ export type Cat = {
   cat_id: string;
   user_id: string;
   name: string;
-  birth_date: string;
+  birth_date: Date;
   breed: string;
   sex: "M" | "F";
   created_at: string;

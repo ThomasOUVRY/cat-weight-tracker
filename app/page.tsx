@@ -1,11 +1,14 @@
-import WeightActions from "./components/WeightActions";
-import WeightGraph from "./components/WeightGraph";
+import CatSelector from "./components/CatSelector/CatSelector";
 
 export default function Page() {
   return (
-    <main className="h-full">
-      <WeightActions />
-      <WeightGraph />
-    </main>
+    <>
+      <aside>
+        <CatSelector />
+      </aside>
+      <main>
+        <p>Bienvenue sur l&apos;application de suivi de votre chat</p>
+      </main>
+    </>
   );
 }
