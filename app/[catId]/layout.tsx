@@ -24,7 +24,7 @@ export default async function CatInfoLayout({
       <aside>
         <CatInfo catId={catId} />
       </aside>
-      {children}
+      <section>{children}</section>
     </>
   );
 }
