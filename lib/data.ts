@@ -27,8 +27,14 @@ export const addWeight = async (
   `;
 };
 
-export const fetchWeightRecords = async (catId: string) => {
-  return (
-    await sql<WeightRecord>`SELECT * FROM weight_records WHERE cat_id = ${catId}`
-  ).rows;
+export const fetchWeightRecordsAndBirthDate = async (catId: string) => {
+  const weightRecords =
+    await sql<WeightRecord>`SELECT * FROM weight_records WHERE cat_id = ${catId}`;
+  const birthDate =
+    await sql<Cat>`SELECT birth_date FROM cats WHERE cat_id = ${catId} LIMIT 1`;
+
+  return {
+    weightRecords: weightRecords.rows,
+    birthDate: birthDate.rows[0].birth_date,
+  };
 };

@@ -1,22 +1,27 @@
+import { CatPageParams } from "@/types/PageParam";
+import ActionsBar from "./components/ActionsBar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import WeightGraphServer from "./components/WeightGraph/WeightGraphServer";
 import { Suspense } from "react";
-import WeightActions from "../components/WeightActions";
-import WeightGraph from "../components/WeightGraph";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-type PageProps = {
-  params: Promise<{ catId: string }>;
-};
-
-export default async function Page({ params }: PageProps) {
+export default async function CatPage({
+  params,
+}: {
+  params: Promise<CatPageParams>;
+}) {
   const { catId } = await params;
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <WeightActions catId={catId} />
+        <ActionsBar />
       </CardHeader>
+
       <CardContent>
-        <WeightGraph />
+        <Suspense fallback={<Skeleton className="h-[300px] w-full" />}>
+          <WeightGraphServer catId={catId} />
+        </Suspense>
       </CardContent>
     </Card>
   );
