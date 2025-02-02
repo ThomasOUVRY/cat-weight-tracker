@@ -18,10 +18,7 @@ export default function CatSelectorClient({ initialCats }: CatSelectorProps) {
   const router = useRouter();
   const params = useParams<{ catId: string }>();
 
-  const onValueChange = (value: string) => {
-    console.log(value);
-    router.push(`/${value}`);
-  };
+  const onValueChange = (value: string) => router.push(`/${value}`);
 
   const currentCat = params.catId || initialCats[0].cat_id;
 

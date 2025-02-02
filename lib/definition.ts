@@ -8,11 +8,11 @@ export type Cat = {
   created_at: string;
 };
 
-export type Weight = {
+export type WeightRecord = {
   record_id: string;
   cat_id: string;
   weight_kg: number;
-  measurement_date: string;
+  measurement_date: Date;
   notes: string;
   created_at: string;
 };
