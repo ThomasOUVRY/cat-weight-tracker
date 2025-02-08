@@ -4,11 +4,26 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: "jsdom",
+    environment: "happy-dom",
     globals: true,
     setupFiles: "./vitest.setup.ts",
-    alias: {
-      "@/*": "/app/*",
-    },
+    alias: [
+      {
+        find: "@/components",
+        replacement: "./components",
+      },
+      {
+        find: "@/lib",
+        replacement: "./lib",
+      },
+      {
+        find: "@/hooks",
+        replacement: "./hooks",
+      },
+      {
+        find: "@/utils",
+        replacement: "./lib/utils",
+      },
+    ],
   },
 });

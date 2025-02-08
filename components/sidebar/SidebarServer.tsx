@@ -7,15 +7,13 @@ export default async function SidebarServer() {
   const cats = await fetchCatList();
 
   return (
-    <aside>
-      <Card className="h-full">
-        <CardHeader>
-          <CardTitle>Cat Care</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <SidebarClient cats={cats} />
-        </CardContent>
-      </Card>
-    </aside>
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>Cat Care</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <SidebarClient cats={cats} />
+      </CardContent>
+    </Card>
   );
 }

@@ -5,7 +5,7 @@ export type Cat = {
   birth_date: Date;
   breed: string;
   sex: "M" | "F";
-  created_at: string;
+  created_at: Date;
 };
 
 export type WeightRecord = {
@@ -14,7 +14,7 @@ export type WeightRecord = {
   weight_kg: number;
   measurement_date: Date;
   notes: string;
-  created_at: string;
+  created_at: Date;
 };
 
 export type User = {

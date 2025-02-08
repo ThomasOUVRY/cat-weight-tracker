@@ -1,16 +1,8 @@
 "use client";
 
-import { Cat, TrendingUp } from "lucide-react";
+import { Calendar, Cat } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -18,6 +10,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { WeightRecord } from "@/lib/definition";
+import WeightDialog from "../WeighDialog/WeightDialog";
+import { useState } from "react";
 
 export default function WeightGraphClient({
   weights = [],
@@ -26,62 +20,80 @@ export default function WeightGraphClient({
   weights: WeightRecord[];
   birthDate: Date;
 }) {
-  const chartData = weights.map((weight) => ({
-    date: weight.measurement_date,
-    weight: weight.weight_kg,
-  }));
+  const [selectedWeight, setSelectedWeight] = useState<
+    WeightRecord | undefined
+  >();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  console.log(chartData);
+  if (weights.length === 0) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-sm text-muted-foreground">No weights recorded</p>
+      </div>
+    );
+  }
 
   const chartConfig = {
-    weight: {
+    weight_kg: {
       label: "Weight",
       color: "hsl(var(--chart-1))",
+      icon: Cat,
     },
   } satisfies ChartConfig;
 
-  const CustomDot = (props: any) => {
-    const { cx, cy } = props;
-    return <Cat className="h-4 w-4" />;
+  const handleClick = (data: any) => {
+    if (data && data.activePayload && data.activePayload[0]) {
+      const clickedWeight = data.activePayload[0].payload as WeightRecord;
+      setSelectedWeight(clickedWeight);
+      setDialogOpen(true);
+    }
   };
 
   return (
-    <ChartContainer config={chartConfig}>
-      <LineChart accessibilityLayer data={chartData}>
-        <CartesianGrid vertical={true} />
-        <XAxis
-          dataKey="date"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          tickFormatter={(value) => {
-            // week number from birth date
-            const diffTime = Math.abs(Date.now() - birthDate.getTime());
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            const weekNumber = Math.ceil(diffDays / 7);
-            return `${weekNumber}`;
-          }}
-        />
-        <YAxis
-          domain={["dataMin - 1", "dataMax + 1"]}
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          tickFormatter={(value) => `${value} kg`}
-        />
+    <>
+      <ChartContainer config={chartConfig} className="min-h-[300px] h-full">
+        <LineChart accessibilityLayer data={weights} onClick={handleClick}>
+          <CartesianGrid vertical={true} />
+          <XAxis
+            dataKey="measurement_date"
+            tickLine={false}
+            axisLine={true}
+            tickMargin={8}
+            domain={[0, "dataMax + 1"]}
+            tickFormatter={(value) => {
+              const date = new Date(value);
+              const diffTime = Math.abs(date.getTime() - birthDate.getTime());
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              const weekNumber = Math.floor(diffDays / 7);
+              return `${weekNumber}`;
+            }}
+          />
+          <YAxis
+            domain={["dataMin - 1", "dataMax + 1"]}
+            tickLine={false}
+            axisLine={true}
+            tickMargin={8}
+            tickFormatter={(value) => `${value} kg`}
+          />
 
-        <ChartTooltip
-          cursor={false}
-          content={<ChartTooltipContent hideLabel />}
-        />
-        <Line
-          dataKey="weight"
-          type="natural"
-          stroke="hsl(var(--chart-1))"
-          strokeWidth={2}
-          dot={<CustomDot />}
-        />
-      </LineChart>
-    </ChartContainer>
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent hideLabel />}
+          />
+          <Line
+            dataKey="weight_kg"
+            type="natural"
+            stroke="hsl(var(--chart-1))"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ChartContainer>
+
+      <WeightDialog
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+        weight={selectedWeight}
+      />
+    </>
   );
 }

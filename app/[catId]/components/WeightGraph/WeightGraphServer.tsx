@@ -14,9 +14,5 @@ export default async function WeightGraphServer({ catId }: { catId: string }) {
   const { birthDate, weightRecords } = await fetchWeightRecordsAndBirthDate(
     catId
   );
-  return (
-    <div>
-      <WeightGraphClient weights={weightRecords} birthDate={birthDate} />
-    </div>
-  );
+  return <WeightGraphClient weights={weightRecords} birthDate={birthDate} />;
 }
