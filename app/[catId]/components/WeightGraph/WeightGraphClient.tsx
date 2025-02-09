@@ -1,7 +1,15 @@
 "use client";
 
 import { Calendar, Cat } from "lucide-react";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  CartesianGrid,
+  ComposedChart,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import {
   ChartConfig,
@@ -10,6 +18,13 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { WeightRecord } from "@/lib/definition";
+import {
+  buildFullTrackData,
+  CHART_CONFIG,
+  Percentile,
+  PERCENTILES,
+  WEIGHT_TACKS,
+} from "@/consts/WeightTrack";
 import WeightDialog from "../WeighDialog/WeightDialog";
 import { useState } from "react";
 
@@ -33,14 +48,6 @@ export default function WeightGraphClient({
     );
   }
 
-  const chartConfig = {
-    weight_kg: {
-      label: "Weight",
-      color: "hsl(var(--chart-1))",
-      icon: Cat,
-    },
-  } satisfies ChartConfig;
-
   const handleClick = (data: any) => {
     if (data && data.activePayload && data.activePayload[0]) {
       const clickedWeight = data.activePayload[0].payload as WeightRecord;
@@ -49,44 +56,53 @@ export default function WeightGraphClient({
     }
   };
 
+  console.table(buildFullTrackData());
+
   return (
     <>
-      <ChartContainer config={chartConfig} className="min-h-[300px] h-full">
-        <LineChart accessibilityLayer data={weights} onClick={handleClick}>
-          <CartesianGrid vertical={true} />
+      <ChartContainer config={CHART_CONFIG} className="h-[300px] h-full">
+        <ComposedChart accessibilityLayer data={buildFullTrackData()}>
+          <CartesianGrid />
           <XAxis
-            dataKey="measurement_date"
-            tickLine={false}
-            axisLine={true}
-            tickMargin={8}
-            domain={[0, "dataMax + 1"]}
-            tickFormatter={(value) => {
-              const date = new Date(value);
-              const diffTime = Math.abs(date.getTime() - birthDate.getTime());
-              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-              const weekNumber = Math.floor(diffDays / 7);
-              return `${weekNumber}`;
-            }}
+            dataKey="week"
+            domain={[0, 55]}
+            minTickGap={5}
+            label={{ value: "Week", position: "insideBottom" }}
           />
           <YAxis
-            domain={["dataMin - 1", "dataMax + 1"]}
-            tickLine={false}
-            axisLine={true}
-            tickMargin={8}
-            tickFormatter={(value) => `${value} kg`}
+            tickCount={9}
+            label={{
+              value: "Weight (kg)",
+              angle: -90,
+              position: "insideLeft",
+            }}
+            allowDecimals={false}
           />
 
           <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
+            cursor
+            content={<ChartTooltipContent indicator="dot" />}
           />
+          {PERCENTILES.map((percentile, index) => (
+            <Area
+              key={percentile}
+              dataKey={percentile}
+              type="natural"
+              connectNulls
+              fillOpacity={0}
+              strokeDasharray={index % 2 === 0 ? "3 3" : undefined}
+              stackId="stack"
+            />
+          ))}
           <Line
-            dataKey="weight_kg"
-            type="natural"
-            stroke="hsl(var(--chart-1))"
-            strokeWidth={2}
+            dataKey="mitaine"
+            stroke="pink"
+            dot={false}
+            strokeWidth={3}
+            additive="sum"
+            connectNulls
           />
-        </LineChart>
+        </ComposedChart>
       </ChartContainer>
 
       <WeightDialog
